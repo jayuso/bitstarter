@@ -22,6 +22,7 @@ References:
 */
 
 var fs = require('fs');
+var rest = require('restler');
 var program = require('commander');
 var cheerio = require('cheerio');
 var HTMLFILE_DEFAULT = "index.html";
@@ -55,11 +56,28 @@ var checkHtmlFile = function(htmlfile, checksfile) {
     return out;
 };
 
+var checkHtml = function(html, checksfile) {
+ 
+    $ = html;
+    var checks = loadChecks(checksfile).sort();
+    var out = {};
+    for(var ii in checks) {
+        var present = $(checks[ii]).length > 0;
+        out[checks[ii]] = present;
+    }
+    return out;
+};
+
 var clone = function(fn) {
     // Workaround for commander.js issue.
     // http://stackoverflow.com/a/6772648
     return fn.bind({});
 };
+
+var response2console = function(result,response) {
+	console.log(checkHtml(result,"checks.json"));
+}
+
 
 if(require.main == module) {
     program
@@ -69,6 +87,9 @@ if(require.main == module) {
     var checkJson = checkHtmlFile(program.file, program.checks);
     var outJson = JSON.stringify(checkJson, null, 4);
     console.log(outJson);
+
+	rest.get("http://www.google.com").on("complete",response2console);
+
 } else {
     exports.checkHtmlFile = checkHtmlFile;
 }
