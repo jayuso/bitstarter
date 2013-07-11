@@ -86,17 +86,12 @@ if(require.main == module) {
         .option('-u, --url <url>', 'URL')
         .parse(process.argv);
     
-    if (program.file!="") {
-
-   	 console.log("program.file:"+program.file);
-	 var checkJson = checkHtmlFile(program.file, program.checks);
-   	 var outJson = JSON.stringify(checkJson, null, 4);
-   	 console.log(outJson);
-    } else {
+	 //var checkJson = checkHtmlFile(program.file, program.checks);
+   	 //var outJson = JSON.stringify(checkJson, null, 4);
+   	 //console.log(outJson);
 
    	 console.log("program.url:"+program.url);
-	rest.get("http://www.google.com").on("complete",response2console);
-    }
+	 rest.get(program.url).on("complete",response2console);
 } else {
     exports.checkHtmlFile = checkHtmlFile;
 }
