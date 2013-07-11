@@ -58,7 +58,7 @@ var checkHtmlFile = function(htmlfile, checksfile) {
 
 var checkHtml = function(html, checksfile) {
  
-    $ = html;
+    $ = cheerio.load(html);
     var checks = loadChecks(checksfile).sort();
     var out = {};
     for(var ii in checks) {
@@ -81,15 +81,22 @@ var response2console = function(result,response) {
 
 if(require.main == module) {
     program
-        .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
-        .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
+        .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists),CHECKSFILE_DEFAULT)
+        .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists),HTMLFILE_DEFAULT)
+        .option('-u, --url <url>', 'URL')
         .parse(process.argv);
-    var checkJson = checkHtmlFile(program.file, program.checks);
-    var outJson = JSON.stringify(checkJson, null, 4);
-    console.log(outJson);
+    
+    if (program.file!="") {
 
+   	 console.log("program.file:"+program.file);
+	 var checkJson = checkHtmlFile(program.file, program.checks);
+   	 var outJson = JSON.stringify(checkJson, null, 4);
+   	 console.log(outJson);
+    } else {
+
+   	 console.log("program.url:"+program.url);
 	rest.get("http://www.google.com").on("complete",response2console);
-
+    }
 } else {
     exports.checkHtmlFile = checkHtmlFile;
 }
